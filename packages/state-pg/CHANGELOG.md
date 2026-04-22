@@ -1,5 +1,20 @@
 # @chat-adapter/state-pg
 
+## 4.27.0
+
+### Patch Changes
+
+- Updated dependencies [1e7c551]
+- Updated dependencies [b9a1961]
+- Updated dependencies [9093292]
+- Updated dependencies [7e90d9c]
+- Updated dependencies [bca4792]
+- Updated dependencies [37dbb4a]
+- Updated dependencies [608d5f0]
+- Updated dependencies [a179b29]
+- Updated dependencies [a8f2aab]
+  - chat@4.27.0
+
 ## 4.26.0
 
 ### Patch Changes

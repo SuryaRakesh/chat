@@ -1,5 +1,24 @@
 # chat
 
+## 4.27.0
+
+### Minor Changes
+
+- 1e7c551: restore attachment fetchData after queue/debounce serialization
+- b9a1961: Switch Telegram adapter's outbound `parse_mode` from legacy `Markdown` to `MarkdownV2`, and replace the standard-markdown passthrough renderer with a proper AST → MarkdownV2 renderer. Standard markdown (`**bold**`) and legacy `Markdown` (`*bold*`) use different syntaxes and have no shared escape rules, so any message containing `.`, `!`, `(`, `)`, `-`, `_` in regular text — which is virtually every LLM-generated message — was being rejected with `can't parse entities`. The new renderer walks the mdast tree and emits MarkdownV2 with context-aware escaping (normal text vs. code blocks vs. link URLs), uniformly applies MarkdownV2 `parse_mode` to every format-converter output (including AST messages, which previously shipped without `parse_mode` and rendered asterisks literally), and escapes card fallback text.
+
+  Also fix silent message truncation that the MarkdownV2 migration widened from a rare bug into a reliable 400. The previous truncator sliced messages at 4096/1024 chars and appended literal `...`, but in MarkdownV2 `.` is a reserved character that must be escaped, the slice can leave an orphan trailing `\`, and it can cut through a paired entity (`*bold*`, `` `code` ``) leaving it unclosed — all of which cause `can't parse entities`. The two truncate methods are unified into `truncateForTelegram(text, limit, parseMode)`, which appends an escaped `\.\.\.` for MarkdownV2 and walks back past unbalanced entity delimiters or orphan backslashes before appending. Plain-text messages keep literal `...`.
+
+  Internal typing hardening: `renderMarkdownV2` is now typed exhaustively on mdast's `Nodes` union with a `never` assertion, so new mdast node types fail the build rather than silently falling through. Introduce `TelegramParseMode = "MarkdownV2" | "plain"` replacing the previous `string | undefined` at call sites, with `toBotApiParseMode` mapping to the Bot API wire format at the boundary. The `chat` package gains a re-export of mdast's `Nodes` union so adapters can build exhaustively typed renderers without importing mdast directly.
+
+- 9093292: add streaming options to thread.post() with platform-specific namespacing
+- 7e90d9c: Add Socket Mode support for environments behind firewalls that can't expose public HTTP endpoints, and add `{ action: "clear" }` modal response to close the entire modal view stack
+- bca4792: Allow `task_update` streaming chunks to include optional `details` text for Slack task cards
+- 37dbb4a: Add `thread.getParticipants()` to get unique human participants in a thread
+- 608d5f0: Add `chat.thread(threadId)` method to create Thread handles outside of webhook contexts
+- a179b29: Implement external_select block kit for Slack
+- a8f2aab: Allow `plan.updateTask()` to target a specific task by ID via `{ id: taskId }` instead of always updating the last in_progress task
+
 ## 4.26.0
 
 ### Minor Changes

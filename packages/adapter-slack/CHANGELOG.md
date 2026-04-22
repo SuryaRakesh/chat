@@ -1,5 +1,31 @@
 # @chat-adapter/slack
 
+## 4.27.0
+
+### Minor Changes
+
+- 6b17c60: Add `apiUrl` config option for custom API endpoint configuration (e.g. GovSlack, GitHub Enterprise, GCC-High Teams)
+- 7e90d9c: Add Socket Mode support for environments behind firewalls that can't expose public HTTP endpoints, and add `{ action: "clear" }` modal response to close the entire modal view stack
+- a179b29: Implement external_select block kit for Slack
+
+### Patch Changes
+
+- 1e7c551: restore attachment fetchData after queue/debounce serialization
+- 53c6b68: Fix DM messages failing with `invalid_thread_ts` by guarding Slack API calls with `threadTs || undefined`
+- c26ee6c: Fix `@mention` rewrite regex so email addresses (e.g. `user@example.com`) and `<mailto:…>` links are no longer mangled into broken Slack user mentions. The lookbehind now excludes any word character before `@`, which also means mentions immediately following a word character (e.g. `prefix@user`) are no longer rewritten — a bare `@user` still converts as before.
+- 0f8b2b1: Fix self-mention detection in multi-workspace installs by using the request-scoped bot user ID instead of the adapter-level default
+- Updated dependencies [1e7c551]
+- Updated dependencies [b9a1961]
+- Updated dependencies [9093292]
+- Updated dependencies [7e90d9c]
+- Updated dependencies [bca4792]
+- Updated dependencies [37dbb4a]
+- Updated dependencies [608d5f0]
+- Updated dependencies [a179b29]
+- Updated dependencies [a8f2aab]
+  - chat@4.27.0
+  - @chat-adapter/shared@4.27.0
+
 ## 4.26.0
 
 ### Patch Changes
